@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolverPro - Resuelve tus Problemas al Instante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .tab-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .upload-area:hover {
+            background: #e8ebff;
+            border-color: #4CAF50;
+        }
+
+        .upload-area.dragover {
+            background: #d0d7ff;
+            border-color: #4CAF50;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .problem-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .problem-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .problem-card.pending {
+            border-left-color: #ff9800;
+        }
+
+        .problem-card.in-progress {
+            border-left-color: #2196F3;
+        }
+
+        .problem-card.completed {
+            border-left-color: #4CAF50;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-in-progress {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .price-info {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #2196F3;
+        }
+
+        .price-info h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .price-table {
+            display: grid;
+            gap: 10px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .package-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .package-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .package-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .package-card.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .package-card h4 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .package-card .original-price {
+            text-decoration: line-through;
+            opacity: 0.6;
+            font-size: 0.9em;
+        }
+
+        .package-card .discount-price {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .package-card.selected .discount-price {
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .export-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 SolverPro</h1>
+            <p>Resuelve tus problemas académicos en tiempo real</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Enviar Problema</button>
+            <button class="tab-btn" onclick="switchTab('admin')">⚙️ Panel Administrador</button>
+        </div>
+
+        <!-- TAB ESTUDIANTE -->
+        <div id="student-tab" class="tab-content active">
+            <h2 style="margin-bottom: 20px; color: #667eea;">📝 Envía tu Problema</h2>
+            
+            <div class="form-group">
+                <label>👤 Tu Nombre:</label>
+                <input type="text" id="student-name" placeholder="Ej: Juan Pérez">
+            </div>
+
+            <div class="form-group">
+                <label>📱 WhatsApp (con código de país):</label>
+                <input type="tel" id="student-phone" placeholder="Ej: +51987654321">
+            </div>
+
+            <div class="form-group">
+                <label>📦 Selecciona un paquete:</label>
+                <div class="package-options" id="package-options">
+                    <!-- Paquetes generados dinámicamente -->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>📸 Sube la imagen del problema:</label>
+                <div class="upload-area" id="upload-area">
+                    <p style="font-size: 3em; margin-bottom: 10px;">📤</p>
+                    <p style="font-size: 1.2em; font-weight: bold;">Arrastra tu imagen aquí</p>
+                    <p style="color: #666;">o haz clic para seleccionar</p>
+                    <input type="file" id="file-input" accept="image/*" style="display: none;">
+                </div>
+                <img id="preview" class="preview-image" style="display: none;">
+            </div>
+
+            <div id="ai-analysis" style="display: none;" class="price-info">
+                <h3>🤖 Análisis Automático del Problema</h3>
+                <div id="analysis-content"></div>
+            </div>
+
+            <button class="btn btn-primary" onclick="submitProblem()" style="width: 100%; margin-top: 20px;">
+                🚀 Enviar Problema
+            </button>
+
+            <div class="price-info">
+                <h3>💰 Tarifas por Complejidad</h3>
+                <div class="price-table">
+                    <div class="price-row">
+                        <span><strong>🟢 Problema Simple:</strong></span>
+                        <span>S/. 2.00</span>
+                    </div>
+                    <div class="price-row">
+                        <span><strong>🟡 Problema Medio:</strong></span>
+                        <span>S/. 5.00</span>
+                    </div>
+                    <div class="price-row">
+                        <span><strong>🔴 Problema Complejo:</strong></span>
+                        <span>S/. 10.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB ADMINISTRADOR -->
+        <div id="admin-tab" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #667eea;">⚙️ Panel de Administración</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="stat-pending">0</h3>
+                    <p>⏳ Pendientes</p>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);">
+                    <h3 id="stat-progress">0</h3>
+                    <p>🔄 En Proceso</p>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);">
+                    <h3 id="stat-completed">0</h3>
+                    <p>✅ Completados</p>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);">
+                    <h3 id="stat-revenue">S/. 0</h3>
+                    <p>💵 Ingresos Hoy</p>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="search-box">
+                    <input type="text" id="search-problems" placeholder="🔍 Buscar por nombre o teléfono..." 
+                           onkeyup="filterProblems()" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;">
+                </div>
+                <select id="filter-status" onchange="filterProblems()" style="padding: 12px; border: 2px solid #ddd; border-radius: 8px;">
+                    <option value="all">Todos los estados</option>
+                    <option value="pending">Pendientes</option>
+                    <option value="in-progress">En Proceso</option>
+                    <option value="completed">Completados</option>
+                </select>
+                <button class="export-btn" onclick="exportData()">📥 Exportar Datos</button>
+            </div>
+
+            <div id="problems-list">
+                <p style="text-align: center; color: #999; padding: 40px;">No hay problemas registrados aún</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA ASIGNAR PROBLEMA -->
+    <div id="assign-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👨‍🏫 Asignar Problema</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // DATOS LOCALES
+        let problems = JSON.parse(localStorage.getItem('problems')) || [];
+        let currentProblemId = null;
+        let selectedPackage = 1;
+
+        // PAQUETES CON DESCUENTOS
+        const packages = [
+            { quantity: 1, price: 0, discount: 0, name: '1 Problema' },
+            { quantity: 2, price: 0, discount: 10, name: '2 Problemas' },
+            { quantity: 3, price: 0, discount: 15, name: '3 Problemas' },
+            { quantity: 4, price: 0, discount: 20, name: '4 Problemas' },
+            { quantity: 5, price: 0, discount: 25, name: '5 Problemas' }
+        ];
+
+        // INICIALIZACIÓN
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPackages();
+            updateStats();
+            renderProblems();
+            setupUploadArea();
+        });
+
+        function renderPackages() {
+            const container = document.getElementById('package-options');
+            container.innerHTML = packages.map((pkg, idx) => `
+                <div class="package-card ${idx === 0 ? 'selected' : ''}" onclick="selectPackage(${idx})">
+                    <h4>${pkg.name}</h4>
+                    ${pkg.discount > 0 ? `
+                        <p class="original-price">S/. ${(pkg.quantity * 5).toFixed(2)}</p>
+                        <p class="discount-price">S/. ${(pkg.quantity * 5 * (1 - pkg.discount/100)).toFixed(2)}</p>
+                        <p style="color: #4CAF50; font-weight: bold;">-${pkg.discount}% OFF</p>
+                    ` : `
+                        <p class="discount-price">Desde S/. 2.00</p>
+                    `}
+                </div>
+            `).join('');
+        }
+
+        function selectPackage(idx) {
+            selectedPackage = packages[idx].quantity;
+            document.querySelectorAll('.package-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === idx);
+            });
+        }
+
+        function setupUploadArea() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const preview = document.getElementById('preview');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    handleImage(file);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    handleImage(file);
+                }
+            });
+        }
+
+        function handleImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('preview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                
+                // Analizar con IA
+                analyzeWithAI(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function analyzeWithAI(imageData) {
+            const analysisDiv = document.getElementById('ai-analysis');
+            const contentDiv = document.getElementById('analysis-content');
+            
+            analysisDiv.style.display = 'block';
+            contentDiv.innerHTML = '<p>🔄 Analizando imagen con IA...</p>';
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1000,
+                        messages: [{
+                            role: 'user',
+                            content: [
+                                {
+                                    type: 'image',
+                                    source: {
+                                        type: 'base64',
+                                        media_type: 'image/jpeg',
+                                        data: imageData.split(',')[1]
+                                    }
+                                },
+                                {
+                                    type: 'text',
+                                    text: 'Analiza este problema académico y responde SOLO en formato JSON sin preamble ni markdown: {"complexity": "simple|medium|complex", "subject": "materia", "estimatedMinutes": numero, "price": numero_entre_2_y_10, "description": "breve descripcion del problema"}'
+                                }
+                            ]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                const text = data.content[0].text;
+                const cleanText = text.replace(/```json|```/g, '').trim();
+                const analysis = JSON.parse(cleanText);
+
+                const complexityMap = {
+                    'simple': { label: '🟢 Simple', color: '#4CAF50' },
+                    'medium': { label: '🟡 Medio', color: '#ff9800' },
+                    'complex': { label: '🔴 Complejo', color: '#f44336' }
+                };
+
+                const comp = complexityMap[analysis.complexity];
+
+                contentDiv.innerHTML = `
+                    <div style="display: grid; gap: 10px;">
+                        <div class="price-row">
+                            <strong>Complejidad:</strong>
+                            <span style="color: ${comp.color}; font-weight: bold;">${comp.label}</span>
+                        </div>
+                        <div class="price-row">
+                            <strong>Materia:</strong>
+                            <span>${analysis.subject}</span>
+                        </div>
+                        <div class="price-row">
+                            <strong>Tiempo estimado:</strong>
+                            <span>${analysis.estimatedMinutes} minutos</span>
+                        </div>
+                        <div class="price-row">
+                            <strong>Precio sugerido:</strong>
+                            <span style="color: #4CAF50; font-weight: bold;">S/. ${analysis.price.toFixed(2)}</span>
+                        </div>
+                        <div class="price-row">
+                            <strong>Descripción:</strong>
+                            <span>${analysis.description}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Guardar análisis para uso posterior
+                window.currentAnalysis = analysis;
+
+            } catch (error) {
+                contentDiv.innerHTML = `<p style="color: #f44336;">❌ Error al analizar: ${error.message}</p>`;
+            }
+        }
+
+        function submitProblem() {
+            const name = document.getElementById('student-name').value.trim();
+            const phone = document.getElementById('student-phone').value.trim();
+            const preview = document.getElementById('preview');
+
+            if (!name || !phone) {
+                alert('⚠️ Por favor completa tu nombre y WhatsApp');
+                return;
+            }
+
+            if (!preview.src || preview.style.display === 'none') {
+                alert('⚠️ Por favor sube una imagen del problema');
+                return;
+            }
+
+            const problem = {
+                id: Date.now(),
+                name,
+                phone,
+                image: preview.src,
+                packageQuantity: selectedPackage,
+                packageDiscount: packages.find(p => p.quantity === selectedPackage)?.discount || 0,
+                analysis: window.currentAnalysis || null,
+                status: 'pending',
+                timestamp: new Date().toISOString(),
+                assignedTeacher: null,
+                meetingLink: null,
+                paymentMethod: null,
+                paid: false
+            };
+
+            problems.push(problem);
+            localStorage.setItem('problems', JSON.stringify(problems));
+
+            alert('✅ ¡Problema enviado exitosamente! Te contactaremos pronto.');
+            
+            // Limpiar formulario
+            document.getElementById('student-name').value = '';
+            document.getElementById('student-phone').value = '';
+            preview.style.display = 'none';
+            document.getElementById('ai-analysis').style.display = 'none';
+            selectPackage(0);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tab === 'student') {
+                document.querySelector('[onclick="switchTab(\'student\')"]').classList.add('active');
+                document.getElementById('student-tab').classList.add('active');
+            } else {
+                document.querySelector('[onclick="switchTab(\'admin\')"]').classList.add('active');
+                document.getElementById('admin-tab').classList.add('active');
+                updateStats();
+                renderProblems();
+            }
+        }
+
+        function updateStats() {
+            const pending = problems.filter(p => p.status === 'pending').length;
+            const progress = problems.filter(p => p.status === 'in-progress').length;
+            const completed = problems.filter(p => p.status === 'completed').length;
+            
+            const today = new Date().toDateString();
+            const revenue = problems
+                .filter(p => p.paid && new Date(p.timestamp).toDateString() === today)
+                .reduce((sum, p) => sum + (p.analysis?.price || 5), 0);
+
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-progress').textContent = progress;
+            document.getElementById('stat-completed').textContent = completed;
+            document.getElementById('stat-revenue').textContent = `S/. ${revenue.toFixed(2)}`;
+        }
+
+        function renderProblems() {
+            const container = document.getElementById('problems-list');
+            
+            if (problems.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">No hay problemas registrados aún</p>';
+                return;
+            }
+
+            const sortedProblems = [...problems].reverse();
+            
+            container.innerHTML = sortedProblems.map(problem => `
+                <div class="problem-card ${problem.status}" data-id="${problem.id}">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div>
+                            <h3 style="margin-bottom: 5px;">👤 ${problem.name}</h3>
+                            <p style="color: #666;">📱 ${problem.phone}</p>
+                            <p style="color: #666;">📦 Paquete: ${problem.packageQuantity} problema(s) ${problem.packageDiscount > 0 ? `(-${problem.packageDiscount}%)` : ''}</p>
+                            <p style="color: #666;">🕐 ${new Date(problem.timestamp).toLocaleString('es-PE')}</p>
+                        </div>
+                        <span class="status-badge status-${problem.status}">
+                            ${problem.status === 'pending' ? '⏳ Pendiente' : problem.status === 'in-progress' ? '🔄 En Proceso' : '✅ Completado'}
+                        </span>
+                    </div>
+
+                    ${problem.analysis ? `
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <strong>🤖 Análisis IA:</strong>
+                            <p>📚 Materia: ${problem.analysis.subject}</p>
+                            <p>⏱️ Tiempo: ${problem.analysis.estimatedMinutes} min</p>
+                            <p>💰 Precio: S/. ${problem.analysis.price.toFixed(2)}</p>
+                        </div>
+                    ` : ''}
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="openAssignModal(${problem.id})" style="font-size: 0.9em; padding: 10px 20px;">
+                            👨‍🏫 Asignar Profesor
+                        </button>
+                        <button class="btn btn-success" onclick="viewImage(${problem.id})" style="font-size: 0.9em; padding: 10px 20px;">
+                            🖼️ Ver Imagen
+                        </button>
+                        <button class="btn btn-warning" onclick="changeStatus(${problem.id}, 'in-progress')" style="font-size: 0.9em; padding: 10px 20px;">
+                            🔄 En Proceso
+                        </button>
+                        <button class="btn btn-success" onclick="changeStatus(${problem.id}, 'completed')" style="font-size: 0.9em; padding: 10px 20px;">
+                            ✅ Completar
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteProblem(${problem.id})" style="font-size: 0.9em; padding: 10px 20px;">
+                            🗑️ Eliminar
+                        </button>
+                    </div>
+
+                    ${problem.assignedTeacher ? `
+                        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                            <strong>👨‍🏫 Asignado a:</strong> ${problem.assignedTeacher}<br>
+                            ${problem.meetingLink ? `<strong>🔗 Enlace:</strong> <a href="${problem.meetingLink}" target="_blank">${problem.meetingLink}</a><br>` : ''}
+                            ${problem.paymentMethod ? `<strong>💳 Pago:</strong> ${problem.paymentMethod} ${problem.paid ? '✅' : '⏳'}<br>` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function filterProblems() {
+            const searchTerm = document.getElementById('search-problems').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value;
+
+            document.querySelectorAll('.problem-card').forEach(card => {
+                const id = parseInt(card.dataset.id);
+                const problem = problems.find(p => p.id === id);
+                
+                const matchesSearch = problem.name.toLowerCase().includes(searchTerm) || 
+                                     problem.phone.includes(searchTerm);
+                const matchesStatus = statusFilter === 'all' || problem.status === statusFilter;
+
+                card.style.display = (matchesSearch && matchesStatus) ? 'block' : 'none';
+            });
+        }
+
+        function openAssignModal(id) {
+            currentProblemId = id;
+            const problem = problems.find(p => p.id === id);
+            const modal = document.getElementById('assign-modal');
+            const body = document.getElementById('modal-body');
+
+            body.innerHTML = `
+                <div class="form-group">
+                    <label>👨‍🏫 Nombre del Profesor:</label>
+                    <input type="text" id="teacher-name" placeholder="Ej: Prof. María García" value="${problem.assignedTeacher || ''}">
+                </div>
+
+                <div class="form-group">
+                    <label>📱 WhatsApp del Profesor:</label>
+                    <input type="tel" id="teacher-phone" placeholder="+51987654321">
+                </div>
+
+                <div class="form-group">
+                    <label>🎥 Plataforma de Reunión:</label>
+                    <select id="meeting-platform">
+                        <option value="">Selecciona plataforma</option>
+                        <option value="meet">Google Meet</option>
+                        <option value="zoom">Zoom</option>
+                        <option value="whatsapp">WhatsApp Video</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🔗 Enlace de Reunión:</label>
+                    <input type="url" id="meeting-link" placeholder="https://meet.google.com/xxx-xxxx-xxx" value="${problem.meetingLink || ''}">
+                </div>
+
+                <div class="form-group">
+                    <label>💳 Método de Pago:</label>
+                    <select id="payment-method">
+                        <option value="">Selecciona método</option>
+                        <option value="Yape">Yape</option>
+                        <option value="Plin">Plin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="payment-confirmed" ${problem.paid ? 'checked' : ''}>
+                        ✅ Pago Confirmado
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-success" onclick="saveAssignment()" style="flex: 1;">💾 Guardar</button>
+                    <button class="btn btn-primary" onclick="openWhatsAppStudent()" style="flex: 1;">📱 Chat Estudiante</button>
+                    <button class="btn btn-primary" onclick="openWhatsAppTeacher()" style="flex: 1;">📱 Chat Profesor</button>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3>🔗 Generar Enlaces Rápidos:</h3>
+                    <div style="display: grid; gap: 10px; margin-top: 10px;">
+                        <button class="btn btn-primary" onclick="generateMeetLink()">📹 Generar Google Meet</button>
+                        <button class="btn btn-primary" onclick="generateZoomLink()">🎥 Generar Zoom</button>
+                        <button class="btn btn-success" onclick="generateWhatsAppCall()">📞 Llamada WhatsApp</button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('assign-modal').classList.remove('active');
+        }
+
+        function saveAssignment() {
+            const problem = problems.find(p => p.id === currentProblemId);
+            
+            problem.assignedTeacher = document.getElementById('teacher-name').value;
+            problem.meetingLink = document.getElementById('meeting-link').value;
+            problem.paymentMethod = document.getElementById('payment-method').value;
+            problem.paid = document.getElementById('payment-confirmed').checked;
+            
+            if (problem.assignedTeacher && problem.meetingLink) {
+                problem.status = 'in-progress';
+            }
+
+            localStorage.setItem('problems', JSON.stringify(problems));
+            
+            closeModal();
+            updateStats();
+            renderProblems();
+            
+            alert('✅ Asignación guardada exitosamente');
+        }
+
+        function generateMeetLink() {
+            const randomCode = Math.random().toString(36).substring(2, 15);
+            document.getElementById('meeting-link').value = `https://meet.google.com/${randomCode}`;
+            document.getElementById('meeting-platform').value = 'meet';
+        }
+
+        function generateZoomLink() {
+            const randomId = Math.floor(Math.random() * 900000000) + 100000000;
+            document.getElementById('meeting-link').value = `https://zoom.us/j/${randomId}`;
+            document.getElementById('meeting-platform').value = 'zoom';
+        }
+
+        function generateWhatsAppCall() {
+            const problem = problems.find(p => p.id === currentProblemId);
+            const phone = problem.phone.replace(/\D/g, '');
+            document.getElementById('meeting-link').value = `https://wa.me/${phone}`;
+            document.getElementById('meeting-platform').value = 'whatsapp';
+        }
+
+        function openWhatsAppStudent() {
+            const problem = problems.find(p => p.id === currentProblemId);
+            const phone = problem.phone.replace(/\D/g, '');
+            const message = encodeURIComponent(`Hola ${problem.name}, tu problema ha sido asignado. ${problem.meetingLink ? `Enlace: ${problem.meetingLink}` : ''}`);
+            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        }
+
+        function openWhatsAppTeacher() {
+            const teacherPhone = document.getElementById('teacher-phone').value.replace(/\D/g, '');
+            if (!teacherPhone) {
+                alert('⚠️ Ingresa el WhatsApp del profesor primero');
+                return;
+            }
+            const problem = problems.find(p => p.id === currentProblemId);
+            const message = encodeURIComponent(`Nuevo problema asignado de ${problem.name}. ${problem.meetingLink ? `Enlace: ${problem.meetingLink}` : ''}`);
+            window.open(`https://wa.me/${teacherPhone}?text=${message}`, '_blank');
+        }
+
+        function viewImage(id) {
+            const problem = problems.find(p => p.id === id);
+            window.open(problem.image, '_blank');
+        }
+
+        function changeStatus(id, newStatus) {
+            const problem = problems.find(p => p.id === id);
+            problem.status = newStatus;
+            localStorage.setItem('problems', JSON.stringify(problems));
+            updateStats();
+            renderProblems();
+        }
+
+        function deleteProblem(id) {
+            if (confirm('⚠️ ¿Estás seguro de eliminar este problema?')) {
+                problems = problems.filter(p => p.id !== id);
+                localStorage.setItem('problems', JSON.stringify(problems));
+                updateStats();
+                renderProblems();
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(problems, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `solverpro-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            alert('✅ Datos exportados exitosamente');
+        }
+    </script>
+</body>
+</html>
