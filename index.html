@@ -3,199 +3,576 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolverPro - Ayuda Académica</title>
+    <title>SolverPro - Resolvemos tus ejercicios al instante</title>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg: #f9fafb;
-            --card: #ffffff;
-            --text: #111827;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
-            --success: #10b981;
-            --danger: #ef4444;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         
-        body { background-color: var(--bg); color: var(--text); line-height: 1.5; }
-
-        header {
-            background: var(--card);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .logo { font-weight: 800; font-size: 1.5rem; color: var(--primary); cursor: pointer; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 20px;
+        }
 
-        .nav-buttons button {
-            background: none;
-            border: none;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px 40px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+            background: linear-gradient(to right, #ffffff, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .hero-method {
+            font-size: 18px;
+            color: #d0d0d0;
+            margin-bottom: 48px;
+            font-weight: 500;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+
+        .feature {
+            background: #1a1a1a;
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid #2a2a2a;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            border-color: #404040;
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .feature-text {
+            color: #909090;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .pricing-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .pricing-title {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .pricing-subtitle {
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 18px;
+            margin-bottom: 48px;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto 40px;
+        }
+
+        .pricing-card {
+            background: #1a1a1a;
+            border: 2px solid #2a2a2a;
+            border-radius: 16px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            border-color: #ffffff;
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.featured {
+            background: #ffffff;
+            color: #0a0a0a;
+            border-color: #ffffff;
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0a0a0a;
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .pricing-card.featured .badge {
+            background: #0a0a0a;
+            color: #ffffff;
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 16px 0;
+        }
+
+        .price-label {
+            font-size: 14px;
+            color: #909090;
+            margin-bottom: 24px;
+        }
+
+        .pricing-card.featured .price-label {
+            color: #606060;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            color: #b0b0b0;
+            font-size: 15px;
+        }
+
+        .pricing-card.featured .pricing-features li {
+            color: #404040;
+        }
+
+        .pricing-features li:before {
+            content: "✓";
+            margin-right: 12px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .pricing-card.featured .pricing-features li:before {
+            color: #0a0a0a;
+        }
+
+        .cta-section {
+            background: #ffffff;
+            color: #0a0a0a;
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 48px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(255, 255, 255, 0.1);
+        }
+
+        .cta-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .cta-subtitle {
+            text-align: center;
+            color: #606060;
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #0a0a0a;
             font-weight: 600;
-            color: var(--text-light);
-            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
 
-        .nav-buttons button.active { color: var(--primary); background: #eef2ff; }
-
-        main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
-
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; shadow: 0 1px 3px rgba(0,0,0,0.1); }
-
-        .view { display: none; }
-        .view.active { display: block; }
-
-        h1 { margin-bottom: 1rem; font-size: 1.8rem; text-align: center; }
-        p { color: var(--text-light); text-align: center; margin-bottom: 2rem; }
-
-        .form-group { margin-bottom: 1.2rem; }
-        label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text); }
-        input, select {
+        input {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: #fafafa;
         }
-        input:focus { border-color: var(--primary); ring: 2px solid #c7d2fe; }
+
+        input:focus {
+            outline: none;
+            border-color: #0a0a0a;
+            background: #ffffff;
+        }
+
+        input::placeholder {
+            color: #a0a0a0;
+        }
 
         .btn {
             width: 100%;
-            padding: 0.8rem;
-            background: var(--primary);
+            padding: 18px;
+            background: #0a0a0a;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn:hover { background: var(--primary-hover); }
-        .btn-secondary { background: var(--text-light); margin-top: 1rem; }
-
-        .problem-item {
-            background: var(--card);
-            border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .whatsapp-icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        .trust-text {
+            text-align: center;
+            margin-top: 24px;
+            color: #808080;
+            font-size: 13px;
+        }
+
+        .steps {
+            max-width: 900px;
+            margin: 60px auto 40px;
+            padding: 0 20px;
+        }
+
+        .steps-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .step {
             display: flex;
-            gap: 1rem;
             align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
         }
 
-        .problem-img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
-        .problem-info { flex: 1; }
-        .problem-info h4 { font-size: 1rem; margin-bottom: 0.2rem; }
-        .problem-info p { text-align: left; margin: 0; font-size: 0.8rem; }
-
-        .actions { display: flex; gap: 0.5rem; }
-        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.75rem; width: auto; }
-        .btn-wa { background: var(--success); }
-        .btn-del { background: var(--danger); }
-
-        #image-preview { 
-            max-width: 100%; 
-            margin-top: 1rem; 
-            border-radius: 8px; 
-            display: none; 
-            border: 1px solid var(--border);
+        .step-number {
+            min-width: 60px;
+            height: 60px;
+            background: #1a1a1a;
+            border: 2px solid #2a2a2a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
         }
 
-        .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
-        
-        footer { text-align: center; padding: 2rem; color: var(--text-light); font-size: 0.8rem; }
+        .step-content h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: #909090;
+            font-size: 15px;
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 2px solid #3a3a3a;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .promo-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .promo-text {
+            font-size: 18px;
+            color: #d0d0d0;
+            line-height: 1.6;
+        }
+
+        .promo-highlight {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 40px;
+            }
+
+            .hero-subtitle {
+                font-size: 20px;
+            }
+
+            .cta-section {
+                padding: 36px 28px;
+            }
+
+            .step {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .price {
+                font-size: 40px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="hero">
+        <div class="logo">SolverPro</div>
+        <h1 class="hero-title">¿Atascado con un ejercicio?<br>Te lo resolvemos ahora</h1>
+        <p class="hero-subtitle">Sube la foto, recibe la solución paso a paso en minutos</p>
+        <p class="hero-method">📹 Sesión virtual por Meet, Zoom o llamada de WhatsApp</p>
+    </div>
 
-    <header>
-        <div class="logo" id="nav-logo">SolverPro</div>
-        <div class="nav-buttons">
-            <button id="btn-view-student" class="active">Estudiante</button>
-            <button id="btn-view-login">Admin</button>
-            <button id="btn-logout" style="display:none; color: var(--danger);">Salir</button>
+    <div class="features">
+        <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">Respuesta Inmediata</h3>
+            <p class="feature-text">No esperes horas. Resolvemos tu ejercicio en tiempo real vía meeting virtual</p>
         </div>
-    </header>
+        <div class="feature">
+            <div class="feature-icon">📸</div>
+            <h3 class="feature-title">Solo una Foto</h3>
+            <p class="feature-text">Toma una foto de tu problema y envíala. Así de simple</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">🎯</div>
+            <h3 class="feature-title">Solución Detallada</h3>
+            <p class="feature-text">Explicaciones paso a paso en vivo para que entiendas el proceso completo</p>
+        </div>
+    </div>
 
-    <main>
-        <!-- VISTA ESTUDIANTE -->
-        <section id="student-view" class="view active">
-            <h1>Sube tu Ejercicio</h1>
-            <p>Un experto lo resolverá y te contactará por WhatsApp.</p>
-            <div class="card">
-                <form id="problem-form">
-                    <div class="form-group">
-                        <label>Tu Nombre completo</label>
-                        <input type="text" id="std-name" placeholder="Ej: Juan Pérez" required>
-                    </div>
-                    <div class="form-group">
-                        <label>WhatsApp (con código de país)</label>
-                        <input type="tel" id="std-phone" placeholder="Ej: 51999888777" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Foto del problema</label>
-                        <input type="file" id="std-file" accept="image/*" required>
-                        <img id="image-preview" alt="Vista previa">
-                    </div>
-                    <button type="submit" class="btn">Enviar Ejercicio</button>
-                </form>
+    <div class="pricing-section">
+        <h2 class="pricing-title">Precios accesibles</h2>
+        <p class="pricing-subtitle">Paga solo por lo que necesitas</p>
+        
+        <div class="pricing-cards">
+            <div class="pricing-card">
+                <div class="feature-icon">📝</div>
+                <h3 class="feature-title">Ejercicio Simple</h3>
+                <div class="price">S/ 2</div>
+                <p class="price-label">Por ejercicio</p>
+                <ul class="pricing-features">
+                    <li>Problemas básicos</li>
+                    <li>Resolución rápida</li>
+                    <li>Explicación clara</li>
+                    <li>Meet, Zoom o WhatsApp</li>
+                </ul>
             </div>
-        </section>
 
-        <!-- VISTA LOGIN -->
-        <section id="login-view" class="view">
-            <h1>Panel de Control</h1>
-            <p>Solo personal autorizado.</p>
-            <div class="card" style="max-width: 400px; margin: 0 auto;">
-                <form id="login-form">
-                    <div class="form-group">
-                        <label>Usuario</label>
-                        <input type="text" id="adm-user" value="admin">
-                    </div>
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" id="adm-pass" placeholder="••••••">
-                    </div>
-                    <button type="submit" class="btn">Ingresar</button>
-                </form>
+            <div class="pricing-card featured">
+                <div class="badge">🔥 Popular</div>
+                <div class="feature-icon">📚</div>
+                <h3 class="feature-title">Ejercicio Complejo</h3>
+                <div class="price">S/ 10</div>
+                <p class="price-label">Por ejercicio</p>
+                <ul class="pricing-features">
+                    <li>Problemas avanzados</li>
+                    <li>Desarrollo completo</li>
+                    <li>Explicación detallada</li>
+                    <li>Soporte personalizado</li>
+                </ul>
             </div>
-        </section>
 
-        <!-- VISTA ADMIN -->
-        <section id="admin-view" class="view">
-            <h1>Solicitudes Pendientes</h1>
-            <p id="stats-text">Cargando datos...</p>
-            <div id="problems-container">
-                <!-- Se llena con JS -->
+            <div class="pricing-card">
+                <div class="feature-icon">💰</div>
+                <h3 class="feature-title">Rango Medio</h3>
+                <div class="price">S/ 3-8</div>
+                <p class="price-label">Según complejidad</p>
+                <ul class="pricing-features">
+                    <li>Precio justo</li>
+                    <li>Evaluación previa</li>
+                    <li>Sin sorpresas</li>
+                    <li>Flexibilidad total</li>
+                </ul>
             </div>
-        </section>
+        </div>
 
-        <!-- VISTA ÉXITO -->
-        <section id="success-view" class="view">
-            <div class="card" style="text-align: center;">
-                <h1 style="color: var(--success);">¡Recibido!</h1>
-                <p>Tu ejercicio ha sido enviado correctamente. Estate atento a tu WhatsApp.</p>
-                <button class="btn" onclick="location.reload()">Enviar otro</button>
+        <div class="promo-banner">
+            <h3 class="promo-title">🎁 Promociones de Lanzamiento</h3>
+            <p class="promo-text">
+                <span class="promo-highlight">2x1:</span> Compra 2 ejercicios y paga solo 1<br>
+                <span class="promo-highlight">Pack 4:</span> 4 ejercicios por solo S/ 7 soles<br><br>
+                <em>*Promociones válidas los primeros meses</em>
+            </p>
+        </div>
+    </div>
+
+    <div class="steps">
+        <h2 class="steps-title">Cómo funciona</h2>
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3>Ingresa tus datos</h3>
+                <p>Completa el formulario con tu nombre y número de WhatsApp</p>
             </div>
-        </section>
-    </main>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3>Envía tu ejercicio</h3>
+                <p>Te redirigiremos a WhatsApp donde podrás enviar la foto del problema</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3>Recibe la solución en vivo</h3>
+                <p>Agendamos un meeting virtual rápido por Meet, Zoom o llamada de WhatsApp</p>
+            </div>
+        </div>
+    </div>
 
-    <footer>
-        &copy; 2024 SolverPro - Soluciones Académicas Inmediatas
-    </footer>
+    <div class="cta-section">
+        <h2 class="cta-title">Comienza ahora</h2>
+        <p class="cta-subtitle">Estamos listos para ayudarte con tu ejercicio</p>
 
-    <script type="module" src="index.tsx"></script>
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="nombre">Nombre completo</label>
+                <input 
+                    type="text" 
+                    id="nombre" 
+                    name="nombre" 
+                    placeholder="Ej: María García"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Número de WhatsApp</label>
+                <input 
+                    type="tel" 
+                    id="telefono" 
+                    name="telefono" 
+                    placeholder="Ej: +51 999 999 999"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn">
+                <span class="whatsapp-icon">💬</span>
+                Resolver mi ejercicio ahora
+            </button>
+        </form>
+
+        <p class="trust-text">
+            🔒 Tu información está segura. Solo la usamos para contactarte
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombre').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
+            
+            if (!nombre || !telefono) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+            
+            // Tu número de WhatsApp
+            const numeroWhatsApp = '51967047742';
+            
+            const mensaje = `Hola! Soy ${nombre}%0A` +
+                          `Mi número es: ${telefono}%0A%0A` +
+                          `Necesito ayuda con un ejercicio. Te enviaré la foto ahora.`;
+            
+            const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
+            
+            window.open(urlWhatsApp, '_blank');
+        });
+    </script>
 </body>
 </html>
