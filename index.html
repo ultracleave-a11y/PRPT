@@ -40,6 +40,22 @@
             opacity: 0.9;
         }
 
+        .login-container {
+            max-width: 450px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
         .tabs {
             display: flex;
             gap: 10px;
@@ -403,14 +419,46 @@
             font-weight: bold;
         }
 
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
             border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #c3e6cb;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        .logout-btn:hover {
+            background: #d32f2f;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #c62828;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        .strength-weak { color: #f44336; }
+        .strength-medium { color: #ff9800; }
+        .strength-strong { color: #4CAF50; }
 
         @media (max-width: 768px) {
             .header h1 {
@@ -428,11 +476,21 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
+            .logout-btn {
+                position: relative;
+                top: 0;
+                right: 0;
+                width: 100%;
+                margin-bottom: 15px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="main-container" style="display: none;">
+        <button class="logout-btn" id="logout-btn" onclick="logout()" style="display: none;">🚪 Cerrar Sesión</button>
+        
         <div class="header">
             <h1>🎓 SolverPro</h1>
             <p>Resuelve tus problemas académicos en tiempo real</p>
@@ -440,7 +498,7 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('student')">👨‍🎓 Enviar Problema</button>
-            <button class="tab-btn" onclick="switchTab('admin')">⚙️ Panel Administrador</button>
+            <button class="tab-btn" id="admin-tab-btn" onclick="switchTab('admin')" style="display: none;">⚙️ Panel Administrador</button>
         </div>
 
         <!-- TAB ESTUDIANTE -->
@@ -459,9 +517,7 @@
 
             <div class="form-group">
                 <label>📦 Selecciona un paquete:</label>
-                <div class="package-options" id="package-options">
-                    <!-- Paquetes generados dinámicamente -->
-                </div>
+                <div class="package-options" id="package-options"></div>
             </div>
 
             <div class="form-group">
@@ -546,6 +602,43 @@
         </div>
     </div>
 
+    <!-- LOGIN SCREEN -->
+    <div class="login-container" id="login-screen">
+        <h2>🔐 Acceso Administrador</h2>
+        <div class="error-message" id="login-error"></div>
+        <div class="form-group">
+            <label>👤 Usuario:</label>
+            <input type="text" id="login-username" placeholder="administrador">
+        </div>
+        <div class="form-group">
+            <label>🔑 Contraseña:</label>
+            <input type="password" id="login-password" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary" onclick="login()" style="width: 100%;">🚀 Iniciar Sesión</button>
+        <p style="text-align: center; margin-top: 20px; color: #666;">
+            <a href="#" onclick="showPasswordChange(); return false;" style="color: #667eea;">¿Primera vez? Configura tu contraseña</a>
+        </p>
+    </div>
+
+    <!-- CHANGE PASSWORD SCREEN -->
+    <div class="login-container" id="change-password-screen" style="display: none;">
+        <h2>🔧 Configurar Contraseña</h2>
+        <div class="error-message" id="change-error"></div>
+        <div class="form-group">
+            <label>🔑 Nueva Contraseña:</label>
+            <input type="password" id="new-password" placeholder="Mínimo 8 caracteres" oninput="checkPasswordStrength()">
+            <div id="password-strength" class="password-strength"></div>
+        </div>
+        <div class="form-group">
+            <label>🔑 Confirmar Contraseña:</label>
+            <input type="password" id="confirm-password" placeholder="Repite la contraseña">
+        </div>
+        <button class="btn btn-primary" onclick="changePassword()" style="width: 100%;">💾 Guardar Contraseña</button>
+        <p style="text-align: center; margin-top: 20px; color: #666;">
+            <a href="#" onclick="showLogin(); return false;" style="color: #667eea;">← Volver al login</a>
+        </p>
+    </div>
+
     <!-- MODAL PARA ASIGNAR PROBLEMA -->
     <div id="assign-modal" class="modal">
         <div class="modal-content">
@@ -558,6 +651,173 @@
     </div>
 
     <script>
+        // SEGURIDAD Y AUTENTICACIÓN
+        const ADMIN_USERNAME = 'administrador';
+        let isAuthenticated = false;
+
+        // Función de hash segura (SHA-256)
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Verificar si hay contraseña configurada
+        function hasPasswordConfigured() {
+            return localStorage.getItem('admin_password_hash') !== null;
+        }
+
+        // Configurar contraseña por primera vez
+        async function changePassword() {
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorDiv = document.getElementById('change-error');
+
+            errorDiv.classList.remove('show');
+
+            if (newPassword.length < 8) {
+                errorDiv.textContent = '❌ La contraseña debe tener al menos 8 caracteres';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+                errorDiv.textContent = '❌ La contraseña debe contener mayúsculas, minúsculas y números';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                errorDiv.textContent = '❌ Las contraseñas no coinciden';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            const hashedPassword = await hashPassword(newPassword);
+            localStorage.setItem('admin_password_hash', hashedPassword);
+            
+            alert('✅ Contraseña configurada exitosamente. Ahora puedes iniciar sesión.');
+            showLogin();
+        }
+
+        // Verificar fortaleza de contraseña
+        function checkPasswordStrength() {
+            const password = document.getElementById('new-password').value;
+            const strengthDiv = document.getElementById('password-strength');
+
+            if (password.length === 0) {
+                strengthDiv.textContent = '';
+                return;
+            }
+
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            if (strength < 3) {
+                strengthDiv.textContent = '🔴 Débil';
+                strengthDiv.className = 'password-strength strength-weak';
+            } else if (strength < 5) {
+                strengthDiv.textContent = '🟡 Media';
+                strengthDiv.className = 'password-strength strength-medium';
+            } else {
+                strengthDiv.textContent = '🟢 Fuerte';
+                strengthDiv.className = 'password-strength strength-strong';
+            }
+        }
+
+        // Login
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+
+            errorDiv.classList.remove('show');
+
+            if (!hasPasswordConfigured()) {
+                errorDiv.textContent = '❌ No hay contraseña configurada. Haz clic en "Configura tu contraseña"';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            if (username !== ADMIN_USERNAME) {
+                errorDiv.textContent = '❌ Usuario incorrecto';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            const hashedPassword = await hashPassword(password);
+            const storedHash = localStorage.getItem('admin_password_hash');
+
+            if (hashedPassword !== storedHash) {
+                errorDiv.textContent = '❌ Contraseña incorrecta';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            // Login exitoso
+            isAuthenticated = true;
+            sessionStorage.setItem('authenticated', 'true');
+            showMainApp();
+        }
+
+        // Logout
+        function logout() {
+            isAuthenticated = false;
+            sessionStorage.removeItem('authenticated');
+            showLogin();
+        }
+
+        // Mostrar login
+        function showLogin() {
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('change-password-screen').style.display = 'none';
+            document.getElementById('main-container').style.display = 'none';
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+        }
+
+        // Mostrar cambio de contraseña
+        function showPasswordChange() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('change-password-screen').style.display = 'block';
+            document.getElementById('main-container').style.display = 'none';
+        }
+
+        // Mostrar app principal
+        function showMainApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('change-password-screen').style.display = 'none';
+            document.getElementById('main-container').style.display = 'block';
+            document.getElementById('admin-tab-btn').style.display = 'inline-block';
+            document.getElementById('logout-btn').style.display = 'block';
+            updateStats();
+            renderProblems();
+        }
+
+        // Verificar autenticación al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                isAuthenticated = true;
+                showMainApp();
+            } else {
+                showLogin();
+            }
+            
+            renderPackages();
+            setupUploadArea();
+
+            // Enter key para login
+            document.getElementById('login-password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') login();
+            });
+        });
+
         // DATOS LOCALES
         let problems = JSON.parse(localStorage.getItem('problems')) || [];
         let currentProblemId = null;
@@ -571,14 +831,6 @@
             { quantity: 4, price: 0, discount: 20, name: '4 Problemas' },
             { quantity: 5, price: 0, discount: 25, name: '5 Problemas' }
         ];
-
-        // INICIALIZACIÓN
-        document.addEventListener('DOMContentLoaded', function() {
-            renderPackages();
-            updateStats();
-            renderProblems();
-            setupUploadArea();
-        });
 
         function renderPackages() {
             const container = document.getElementById('package-options');
@@ -643,7 +895,6 @@
                 preview.src = e.target.result;
                 preview.style.display = 'block';
                 
-                // Analizar con IA
                 analyzeWithAI(e.target.result);
             };
             reader.readAsDataURL(file);
@@ -723,7 +974,6 @@
                     </div>
                 `;
 
-                // Guardar análisis para uso posterior
                 window.currentAnalysis = analysis;
 
             } catch (error) {
@@ -767,7 +1017,6 @@
 
             alert('✅ ¡Problema enviado exitosamente! Te contactaremos pronto.');
             
-            // Limpiar formulario
             document.getElementById('student-name').value = '';
             document.getElementById('student-phone').value = '';
             preview.style.display = 'none';
@@ -776,6 +1025,11 @@
         }
 
         function switchTab(tab) {
+            if (tab === 'admin' && !isAuthenticated) {
+                alert('⚠️ Debes iniciar sesión para acceder al panel de administrador');
+                return;
+            }
+
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
